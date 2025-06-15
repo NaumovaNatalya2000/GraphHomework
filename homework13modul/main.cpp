@@ -55,12 +55,5 @@ int main() {
 	//safe_call([&]() {cout << graph.connectVertex("Anna", "Sergey") << endl; });
 
 	cout << "Проверка смежности пар вершин через 3 рукопожатия:" << endl;
-	safe_call([&]() {
-		if (graph.connectVertexFor3("Sergey", "Natalya")) {
-			cout << "Вершины смежны." << endl;
-		}
-		else {
-			cout << "Вершины не смежны" << endl;
-		}
-		});
+	safe_call([&]() {graph.connectVertexFor3("Natalya"); });
 }

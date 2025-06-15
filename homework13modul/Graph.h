@@ -42,7 +42,7 @@ public:
 	//является ли вершина смежной
 	bool connectVertex(const std::string& v1, const std::string& v2);
 	//поиск смежных вершин по 3 рукопожатиям - алгоритм обхода в ширину
-	bool connectVertexFor3(const std::string& v1, const std::string& v2);
+	void connectVertexFor3(const std::string& v1);
 private:
 	//массив вершин
 	Vertex vertexes[MAX_VERTICES];

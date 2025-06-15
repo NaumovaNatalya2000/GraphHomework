@@ -117,48 +117,47 @@ bool Graph::connectVertex(const std::string& v1, const std::string& v2)
 	return false;
 }
 
-bool Graph::connectVertexFor3(const std::string& v1, const std::string& v2)
+void Graph::connectVertexFor3(const std::string& v1)
 {
-	//находим индекс первой вершины
 	int indexV1 = searchIndex(v1);
-	int indexV2 = searchIndex(v2);
-	//если индексы не найдены
-	if (indexV1 == -1 || indexV2 == -1) {
+	if (indexV1 == -1) {
 		throw "Vertex is not found";
 	}
-	//очередь вершин для обхода - в 0 - индекс вершины, в 1 - глубина
-	int queue_to_visit[MAX_VERTICES*4][2];
+
+	int queue_to_visit[MAX_VERTICES * 4][2];
 	int queueCount = 0;
 	int head = 0;
-	//список посещенных вершин
-	bool visited[MAX_VERTICES];
-	for (int i{}; i < MAX_VERTICES; i++) {
-		visited[i] = false;
+
+	// Для каждой вершины храним минимальное число рукопожатий (-1 если не посещали)
+	int minDepth[MAX_VERTICES];
+	for (int i = 0; i < MAX_VERTICES; ++i) {
+		minDepth[i] = -1;
 	}
-	//кладем в очередь начальную вершину
 	queue_to_visit[queueCount][0] = indexV1;
 	queue_to_visit[queueCount][1] = 0;
 	queueCount++;
+	minDepth[indexV1] = 0;
 
-	//цикл обхода
 	while (head < queueCount) {
 		int current = queue_to_visit[head][0];
 		int depth = queue_to_visit[head][1];
 		head++;
 
-		if (current == indexV2 && depth > 0 && depth <= 3) return true;
-		if (depth == 3) continue; // не идём глубже
+		// Выводим только если не исходная вершина, глубина 1-3 и это первый раз
+		if ((current != indexV1) && (depth > 0 && depth <= 3) && (minDepth[current] == depth)) {
+			std::cout << vertexes[indexV1].vName << " -> " << vertexes[current].vName
+				<< " (рукопожатий: " << depth << ")" << std::endl;
+		}
+		if (depth == 3) continue;
 
-		// Добавляем всех соседей
 		for (int i = 0; i < vertexes[current].edgeCount; ++i) {
 			int neighbor = searchIndex(vertexes[current].adj_vertexes[i].vertexWhere);
-			if (!visited[neighbor]) {
-				visited[neighbor] = true;
+			if (minDepth[neighbor] == -1 || minDepth[neighbor] > depth + 1) {
+				minDepth[neighbor] = depth + 1;
 				queue_to_visit[queueCount][0] = neighbor;
 				queue_to_visit[queueCount][1] = depth + 1;
 				queueCount++;
 			}
 		}
 	}
-	return false;
 }
